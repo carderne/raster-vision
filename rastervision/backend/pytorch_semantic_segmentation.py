@@ -33,6 +33,7 @@ from rastervision.backend.torch_utils.semantic_segmentation.train import (
     train_epoch, validate_epoch)
 from rastervision.backend.torch_utils.semantic_segmentation.model import (
     get_model)
+from rastervision.backend.torch_utils import jaccard
 
 log = logging.getLogger(__name__)
 
@@ -269,7 +270,12 @@ class PyTorchSemanticSegmentation(Backend):
                 terminate_at_exit(tensorboard_process)
 
         # Setup optimizer, loss, and LR scheduler.
-        loss_fn = torch.nn.CrossEntropyLoss()
+        if self.train_opts.loss_fn == "JaccardLoss":
+            log.info("Using JaccardLoss!")
+            loss_fn = jaccard.JaccardLoss()
+        else:  # default to CrossEntropyLoss
+            log.info("Using CrossEntropyLoss!")
+            loss_fn = torch.nn.CrossEntropyLoss()
         lr = self.train_opts.lr
         opt = optim.Adam(model.parameters(), lr=lr)
         step_scheduler, epoch_scheduler = None, None

@@ -16,6 +16,7 @@ class TrainOptions():
                  one_cycle=None,
                  num_epochs=None,
                  model_arch=None,
+                 loss_fn=None,
                  sync_interval=None,
                  debug=None,
                  log_tensorboard=None,
@@ -25,6 +26,7 @@ class TrainOptions():
         self.one_cycle = one_cycle
         self.num_epochs = num_epochs
         self.model_arch = model_arch
+        self.loss_fn = loss_fn
         self.sync_interval = sync_interval
         self.debug = debug
         self.log_tensorboard = log_tensorboard
@@ -54,6 +56,7 @@ class PyTorchSemanticSegmentationConfigBuilder(SimpleBackendConfigBuilder):
                            one_cycle=True,
                            num_epochs=5,
                            model_arch='resnet50',
+                           loss_fn="CrossEntropyLoss",
                            sync_interval=1,
                            debug=False,
                            log_tensorboard=True,
@@ -92,6 +95,7 @@ class PyTorchSemanticSegmentationConfigBuilder(SimpleBackendConfigBuilder):
             one_cycle=one_cycle,
             num_epochs=num_epochs,
             model_arch=model_arch,
+            loss_fn=loss_fn,
             sync_interval=sync_interval,
             debug=debug,
             log_tensorboard=log_tensorboard,
