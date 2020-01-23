@@ -36,6 +36,7 @@ def get_class_eval_item(conf_mat, class_id, class_map):
     precision = float(true_pos) / (true_pos + false_pos)
     recall = float(true_pos) / (true_pos + false_neg)
     f1 = 2 * (precision * recall) / (precision + recall)
+    iou = true_pos / (true_pos + false_pos + false_neg)
     count_error = int(false_pos + false_neg)
     gt_count = conf_mat[class_id, :].sum()
 
@@ -53,7 +54,7 @@ def get_class_eval_item(conf_mat, class_id, class_map):
         f1 = float(f1)
 
     return ClassEvaluationItem(precision, recall, f1, count_error, gt_count,
-                               class_id, class_name, conf_mat[class_id, :])
+                               class_id, class_name, conf_mat[class_id, :], iou=iou)
 
 
 class SemanticSegmentationEvaluation(ClassificationEvaluation):
@@ -132,6 +133,7 @@ class SemanticSegmentationEvaluation(ClassificationEvaluation):
                 f1 = 2 * (precision * recall) / (precision + recall)
             else:
                 f1 = 0.0
+            iou = true_positives / (true_positives + false_positives + false_negatives)
             count_error = int(false_positives + false_negatives)
             gt_count = len(gt)
             class_name = 'vector-{}-{}'.format(
@@ -140,7 +142,7 @@ class SemanticSegmentationEvaluation(ClassificationEvaluation):
 
             evaluation_item = ClassEvaluationItem(precision, recall, f1,
                                                   count_error, gt_count,
-                                                  class_id, class_name)
+                                                  class_id, class_name, iou=iou)
 
             if hasattr(self, 'class_to_eval_item') and isinstance(
                     self.class_to_eval_item, dict):
