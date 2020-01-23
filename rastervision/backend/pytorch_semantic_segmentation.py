@@ -216,8 +216,9 @@ class PyTorchSemanticSegmentation(Backend):
         batch_size = self.train_opts.batch_size
         chip_size = self.task_config.chip_size
         class_names = self.class_map.get_class_names()
+        augmentors = self.train_opts.augmentors
         databunch = build_databunch(chip_dir, chip_size, batch_size,
-                                    class_names)
+                                    class_names, augmentors)
         log.info(databunch)
         num_labels = len(databunch.label_names)
         if self.train_opts.debug:

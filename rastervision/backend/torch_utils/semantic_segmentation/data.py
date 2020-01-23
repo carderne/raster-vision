@@ -1,11 +1,18 @@
+import logging
 from os.path import join, basename
 import glob
 
+import numpy as np
+import torch
 from PIL import Image
 import torchvision
 from torch.utils.data import DataLoader, Dataset
+from albumentations.augmentations.transforms import RandomSizedCrop
 
 from rastervision.backend.torch_utils.data import DataBunch
+
+
+log = logging.getLogger(__name__)
 
 
 class ToTensor(object):
@@ -14,6 +21,20 @@ class ToTensor(object):
 
     def __call__(self, x, y):
         return (self.to_tensor(x), (255 * self.to_tensor(y)).squeeze().long())
+
+
+class HandlerRandomSizedCrop:
+    def __init__(self, **kwargs):
+        self.obj = RandomSizedCrop(**kwargs)
+
+    def __call__(self, x, y):
+        x = np.transpose(x.numpy(), (1, 2, 0))
+        y = y.numpy().astype(np.uint8)
+        out = self.obj(image=x, mask=y)
+        x = torch.from_numpy(np.transpose(out["image"], (2, 0, 1)))
+        y = torch.from_numpy(out["mask"].astype(np.int64))
+
+        return x, y
 
 
 class ComposeTransforms(object):
@@ -46,7 +67,7 @@ class SegmentationDataset(Dataset):
         return len(self.img_paths)
 
 
-def build_databunch(data_dir, img_sz, batch_sz, class_names):
+def build_databunch(data_dir, img_sz, batch_sz, class_names, augmentors):
     # set to zero to prevent "dataloader is killed by signal"
     # TODO fix this
     num_workers = 0
@@ -54,7 +75,27 @@ def build_databunch(data_dir, img_sz, batch_sz, class_names):
     train_dir = join(data_dir, 'train')
     valid_dir = join(data_dir, 'valid')
 
-    aug_transforms = ComposeTransforms([ToTensor()])
+    random_sized_crop = HandlerRandomSizedCrop(
+        p=0.5,
+        min_max_height=(int(img_sz / 3), int(img_sz / 1.5)),
+        height=img_sz,
+        width=img_sz
+    )
+    augmentors_dict = {
+        "RandomSizedCrop": random_sized_crop
+    }
+
+    aug_transforms = []
+    for augmentor in augmentors:
+        try:
+            aug_transforms.append(augmentors_dict[augmentor])
+            log.info(f"Adding augmentor {augmentor}")
+        except KeyError as e:
+            log.warning('{0} is an unknown augmentor. Continuing without {0}. \
+                Known augmentors are: {1}'
+                        .format(e, list(augmentors_dict.keys())))
+
+    aug_transforms = ComposeTransforms([ToTensor()] + aug_transforms)
     transforms = ComposeTransforms([ToTensor()])
 
     train_ds = SegmentationDataset(train_dir, transforms=aug_transforms)
