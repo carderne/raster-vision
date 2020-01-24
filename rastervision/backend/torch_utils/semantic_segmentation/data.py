@@ -3,7 +3,6 @@ from os.path import join, basename
 import glob
 
 import numpy as np
-import torch
 from PIL import Image
 import torchvision
 from torch.utils.data import DataLoader, Dataset
@@ -28,13 +27,11 @@ class HandlerRandomSizedCrop:
         self.obj = RandomSizedCrop(**kwargs)
 
     def __call__(self, x, y):
-        x = np.transpose(x.numpy(), (1, 2, 0))
-        y = y.numpy().astype(np.uint8)
-        out = self.obj(image=x, mask=y)
-        x = torch.from_numpy(np.transpose(out["image"], (2, 0, 1)))
-        y = torch.from_numpy(out["mask"].astype(np.int64))
-
-        return x, y
+        # We run this before TeTensor, so x and y are still PIL.Image
+        # If we run after ToTensor, need to convert tensor->ndarray
+        # and back, as albumentations doesn't support tensor.
+        out = self.obj(image=np.array(x), mask=np.array(y))
+        return out["image"], out["mask"]
 
 
 class ComposeTransforms(object):
@@ -82,7 +79,7 @@ def build_databunch(data_dir, img_sz, batch_sz, class_names, augmentors):
         width=img_sz
     )
     augmentors_dict = {
-        "RandomSizedCrop": random_sized_crop
+        "RandomSizedCrop": random_sized_crop,
     }
 
     aug_transforms = []
@@ -95,7 +92,7 @@ def build_databunch(data_dir, img_sz, batch_sz, class_names, augmentors):
                 Known augmentors are: {1}'
                         .format(e, list(augmentors_dict.keys())))
 
-    aug_transforms = ComposeTransforms([ToTensor()] + aug_transforms)
+    aug_transforms = ComposeTransforms(aug_transforms + [ToTensor()])
     transforms = ComposeTransforms([ToTensor()])
 
     train_ds = SegmentationDataset(train_dir, transforms=aug_transforms)
