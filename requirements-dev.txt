@@ -5,6 +5,6 @@ codecov==2.0.15
 yapf==0.22.*
 unify==0.4
 sphinx==1.8.*
-sphinx-autobuild==0.7.*
+#sphinx-autobuild==0.7.*
 ptvsd==4.2.*
 jupyter==1.0.*
