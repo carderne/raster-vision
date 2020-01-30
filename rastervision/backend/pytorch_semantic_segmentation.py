@@ -278,7 +278,7 @@ class PyTorchSemanticSegmentation(Backend):
             log.info("Using CrossEntropyLoss!")
             loss_fn = torch.nn.CrossEntropyLoss()
         lr = self.train_opts.lr
-        opt = optim.Adam(model.parameters(), lr=lr)
+        opt = optim.SGD(model.parameters(), lr=lr)
         step_scheduler, epoch_scheduler = None, None
         num_epochs = self.train_opts.num_epochs
 
