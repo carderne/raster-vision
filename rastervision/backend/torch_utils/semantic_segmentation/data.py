@@ -73,10 +73,10 @@ def build_databunch(data_dir, img_sz, batch_sz, class_names, augmentors):
     valid_dir = join(data_dir, 'valid')
 
     random_sized_crop = HandlerRandomSizedCrop(
-        p=0.5,
-        min_max_height=(int(img_sz / 3), int(img_sz / 1.5)),
-        height=img_sz,
-        width=img_sz
+        p=1,
+        min_max_height=(256, 512),
+        height=256,
+        width=256
     )
     augmentors_dict = {
         "RandomSizedCrop": random_sized_crop,
