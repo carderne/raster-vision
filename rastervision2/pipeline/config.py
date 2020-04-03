@@ -18,7 +18,6 @@ class Config(BaseModel):
     This adds some extra methods to Pydantic BaseModel.
     See https://pydantic-docs.helpmanual.io/
 
-
     The general idea is that configuration schemas can be defined by
     subclassing this and adding class attributes with types and
     default values for each field. Configs can be defined hierarchically,
@@ -33,12 +32,18 @@ class Config(BaseModel):
         extra = 'forbid'
 
     @classmethod
-    def get_summary(cls):
+    def get_field_summary(cls):
         summary = ''
         for _, desc in cls.__fields__.items():
             if desc.name != 'type_hint':
-                summary += '{}: {} = {}\n{}\n\n'.format(
-                    desc.name, desc.type_, desc.default, desc.field_info.description)
+                if desc.required:
+                    summary += '{}: {}\n\n'.format(
+                        desc.name, desc._type_display())
+                else:
+                    summary += '{}: {} = {}\n\n'.format(
+                        desc.name, desc._type_display(), repr(desc.default))
+                if desc.field_info.description:
+                    summary += '{}\n\n'.format(desc.field_info.description)
         return summary
 
     def update(self):
@@ -228,7 +233,7 @@ def register_config(type_hint: str, version: int = 0, upgraders=None):
         registry.add_config(
             type_hint, new_cls, version=version, upgraders=upgraders)
 
-        new_cls.__doc__ = cls.__doc__
+        new_cls.__doc__ = (cls.__doc__ or '') + '\n\n' + cls.get_field_summary()
         return new_cls
 
     return _register_config

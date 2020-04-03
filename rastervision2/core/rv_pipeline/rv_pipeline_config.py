@@ -1,5 +1,5 @@
 from os.path import join
-from typing import List, TYPE_CHECKING, Optional
+from typing import List, TYPE_CHECKING, Optional, Union
 
 from rastervision2.pipeline.pipeline_config import PipelineConfig
 from rastervision2.core.data import (DatasetConfig, StatsTransformerConfig,
@@ -16,39 +16,31 @@ if TYPE_CHECKING:
 
 @register_config('rv_pipeline')
 class RVPipelineConfig(PipelineConfig):
-    """Config for RVPipeline.
+    """Config for RVPipeline."""
+    dataset: DatasetConfig = Field(
+        ...,
+        description='dataset containing train, validation, and optional test scenes')
+    backend: BackendConfig = Field(
+        ..., description='backend to use for interfacing with ML library')
+    evaluators: List[EvaluatorConfig] = Field(
+        [], description='evaluators to run during analyzer command')
+    analyzers: List[AnalyzerConfig] = Field(
+        [], description='analyzers to run during analyzer command')
 
-    Attributes:
-        dataset: dataset containing train, validation, and optional test scenes
-        backend: backend to use for interfacing with ML library
-        evaluators: evaluators to run during analyzer command
-        analyzers: analyzers to run during analyzer command
-        debug: if True, use debug mode
-        train_chip_sz: size of training chips in pixels
-        predict_chip_sz: size of predictions chips in pixels
-        analyze_uri: URI of directory for output of analyze command
-        chip_uri: URI of directory for output of chip command
-        train_uri: URI of directory for output of train command
-        predict_uri: URI of directory for output of predict command
-        eval_uri: URI of directory for output of eval command
-        bundle_uri: URI of directory for output of bundle command
-    """
-    dataset: DatasetConfig
-    backend: BackendConfig
-    evaluators: List[EvaluatorConfig] = []
-    analyzers: List[AnalyzerConfig] = []
+    debug: bool = Field(False, description='if True, use debug mode')
+    train_chip_sz: int = Field(200, description='size of training chips in pixels')
+    predict_chip_sz: int = Field(800, description='size of predictions chips in pixels')
+    predict_batch_sz: int = Field(8, description='batch size to use during prediction')
 
-    debug: bool = False
-    train_chip_sz: int = 200
-    predict_chip_sz: int = 800
-    predict_batch_sz: int = 8
+    analyze_uri: Optional[str] = Field(None, description='URI for output of analyze')
+    chip_uri: Optional[str] = Field(None, description='URI for output of chip')
+    train_uri: Optional[str] = Field(None, description='URI for output of train')
+    predict_uri: Optional[str] = Field(None, description='URI for output of predict')
+    eval_uri: Optional[str] = Field(None, description='URI for output of eval')
+    bundle_uri: Optional[str] = Field(None, description='URI for output of bundle')
 
-    analyze_uri: Optional[str] = None
-    chip_uri: Optional[str] = None
-    train_uri: Optional[str] = None
-    predict_uri: Optional[str] = None
-    eval_uri: Optional[str] = None
-    bundle_uri: Optional[str] = None
+    from rastervision2.core.data import ClassConfig
+    class_config: Union[ClassConfig, str] = ClassConfig(names=['a'], colors=['a'])
 
     def update(self):
         super().update()

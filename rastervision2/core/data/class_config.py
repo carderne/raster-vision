@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from rastervision2.pipeline.config import (Config, register_config,
-                                           ConfigError, Field)
+                                           ConfigError)
 
 
 @register_config('class_config')
