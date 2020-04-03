@@ -8,7 +8,7 @@ from rastervision2.core.analyzer import StatsAnalyzerConfig
 from rastervision2.core.backend import BackendConfig
 from rastervision2.core.evaluation import EvaluatorConfig
 from rastervision2.core.analyzer import AnalyzerConfig
-from rastervision2.pipeline.config import register_config
+from rastervision2.pipeline.config import register_config, Field
 
 if TYPE_CHECKING:
     from rastervision2.core.backend.backend import Backend  # noqa

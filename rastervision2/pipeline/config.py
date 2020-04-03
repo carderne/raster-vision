@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Union
 
-from pydantic import BaseModel, create_model
+from pydantic import BaseModel, create_model, Field
 from typing_extensions import Literal
 
 from rastervision2.pipeline import registry
@@ -31,6 +31,15 @@ class Config(BaseModel):
     # exist in the schema, which helps avoid a command source of bugs.
     class Config:
         extra = 'forbid'
+
+    @classmethod
+    def get_summary(cls):
+        summary = ''
+        for _, desc in cls.__fields__.items():
+            if desc.name != 'type_hint':
+                summary += '{}: {} = {}\n{}\n\n'.format(
+                    desc.name, desc.type_, desc.default, desc.field_info.description)
+        return summary
 
     def update(self):
         """Update any fields before validation.

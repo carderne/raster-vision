@@ -46,6 +46,7 @@ extensions = [
     'pallets_sphinx_themes',
     'sphinxcontrib.programoutput',
     'sphinxcontrib.napoleon',
+    'sphinx-pydantic'
 ]
 
 # https://read-the-docs.readthedocs.io/en/latest/faq.html#i-get-import-errors-on-libraries-that-depend-on-c-modules

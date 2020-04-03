@@ -1,11 +1,12 @@
 from typing import List, Optional
 
 from rastervision2.pipeline.config import (Config, register_config,
-                                           ConfigError)
+                                           ConfigError, Field)
 
 
 @register_config('class_config')
 class ClassConfig(Config):
+    """Configures the class names that are being predicted."""
     names: List[str]
     colors: List[str]
     null_class: Optional[str] = None

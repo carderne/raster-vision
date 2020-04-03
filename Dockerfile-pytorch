@@ -17,5 +17,6 @@ RUN pip install /opt/src/repo/
 RUN rm -r /opt/src/repo/
 
 RUN /opt/src/scripts/compile
+RUN pip install sphinx-pydantic
 
 CMD ["bash"]
