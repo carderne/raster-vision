@@ -33,17 +33,15 @@ class Config(BaseModel):
 
     @classmethod
     def get_field_summary(cls):
-        summary = ''
-        for _, desc in cls.__fields__.items():
-            if desc.name != 'type_hint':
-                if desc.required:
-                    summary += '{}: {}\n\n'.format(
-                        desc.name, desc._type_display())
-                else:
-                    summary += '{}: {} = {}\n\n'.format(
-                        desc.name, desc._type_display(), repr(desc.default))
-                if desc.field_info.description:
-                    summary += '{}\n\n'.format(desc.field_info.description)
+        summary = 'Attributes:\n'
+        for _, field in cls.__fields__.items():
+            if field.name != 'type_hint':
+                desc = field.field_info.description or ''
+                summary += '\t{} ({}): {}'.format(field.name, field._type_display(), desc)
+                if not field.required:
+                    summary += '{}Defaults to {}.'.format(
+                        '.' if not desc.endswith('.') else '', repr(desc.default))
+                summary += '\n'
         return summary
 
     def update(self):
