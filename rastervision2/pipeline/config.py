@@ -39,8 +39,8 @@ class Config(BaseModel):
                 desc = field.field_info.description or ''
                 summary += '\t{} ({}): {}'.format(field.name, field._type_display(), desc)
                 if not field.required:
-                    summary += '{}Defaults to {}.'.format(
-                        '.' if not desc.endswith('.') else '', repr(desc.default))
+                    summary += '{} Defaults to {}.'.format(
+                        '.' if desc and not desc.endswith('.') else '', repr(field.default))
                 summary += '\n'
         return summary
 
