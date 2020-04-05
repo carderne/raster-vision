@@ -13,22 +13,22 @@ class SemanticSegmentationChipOptions(Config):
     """Chipping options for semantic segmentation."""
     window_method: str = Field(
         'sliding', description=(
-            'Window method to use for chipping. Options are: random_sample, sliding'))
+            'Window method to use for chipping. Options are: random_sample, sliding.'))
     target_class_ids: Optional[List[int]] = Field(None, description=(
-        'list of class ids considered as targets (ie. those to prioritize when '
+        'List of class ids considered as targets (ie. those to prioritize when '
         'creating chips) which is only used in conjunction with the '
         'target_count_threshold and negative_survival_probability options. Applies '
         'to the random_sample window method.'))
     negative_survival_prob: float = Field(1.0, description=(
-        'list of class ids considered as targets (ie. those to prioritize when creating '
+        'List of class ids considered as targets (ie. those to prioritize when creating '
         'chips) which is only used in conjunction with the target_count_threshold and '
         'negative_survival_probability options. Applies to the random_sample window '
         'method.'))
     chips_per_scene: int = Field(1000, description=(
-        'number of chips to generate per scene. Applies to the random_sample window '
+        'Number of chips to generate per scene. Applies to the random_sample window '
         'method.'))
     target_count_threshold: int = Field(1000, description=(
-        'minimum number of pixels covering target_classes that a chip must have. '
+        'Minimum number of pixels covering target_classes that a chip must have. '
         'Applies to the random_sample window method.'))
     stride: Optional[int] = Field(None, description=(
         'Stride of windows across image. Defaults to half the chip size. Applies to '

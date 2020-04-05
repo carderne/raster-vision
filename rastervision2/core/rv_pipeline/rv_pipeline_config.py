@@ -19,25 +19,25 @@ class RVPipelineConfig(PipelineConfig):
     """Config for RVPipeline."""
     dataset: DatasetConfig = Field(
         ...,
-        description='dataset containing train, validation, and optional test scenes')
+        description='Dataset containing train, validation, and optional test scenes.')
     backend: BackendConfig = Field(
-        ..., description='backend to use for interfacing with ML library')
+        ..., description='Backend to use for interfacing with ML library.')
     evaluators: List[EvaluatorConfig] = Field(
-        [], description='evaluators to run during analyzer command')
+        [], description='Evaluators to run during analyzer command.')
     analyzers: List[AnalyzerConfig] = Field(
-        [], description='analyzers to run during analyzer command')
+        [], description='Analyzers to run during analyzer command.')
 
-    debug: bool = Field(False, description='if True, use debug mode')
-    train_chip_sz: int = Field(200, description='size of training chips in pixels')
-    predict_chip_sz: int = Field(800, description='size of predictions chips in pixels')
-    predict_batch_sz: int = Field(8, description='batch size to use during prediction')
+    debug: bool = Field(False, description='If True, use debug mode.')
+    train_chip_sz: int = Field(200, description='Size of training chips in pixels.')
+    predict_chip_sz: int = Field(800, description='Size of predictions chips in pixels.')
+    predict_batch_sz: int = Field(8, description='Batch size to use during prediction.')
 
-    analyze_uri: Optional[str] = Field(None, description='URI for output of analyze')
-    chip_uri: Optional[str] = Field(None, description='URI for output of chip')
-    train_uri: Optional[str] = Field(None, description='URI for output of train')
-    predict_uri: Optional[str] = Field(None, description='URI for output of predict')
-    eval_uri: Optional[str] = Field(None, description='URI for output of eval')
-    bundle_uri: Optional[str] = Field(None, description='URI for output of bundle')
+    analyze_uri: Optional[str] = Field(None, description='URI for output of analyze.')
+    chip_uri: Optional[str] = Field(None, description='URI for output of chip.')
+    train_uri: Optional[str] = Field(None, description='URI for output of train.')
+    predict_uri: Optional[str] = Field(None, description='URI for output of predict.')
+    eval_uri: Optional[str] = Field(None, description='URI for output of eval.')
+    bundle_uri: Optional[str] = Field(None, description='URI for output of bundle.')
 
     def update(self):
         super().update()
