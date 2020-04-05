@@ -32,7 +32,8 @@ class Config(BaseModel):
         extra = 'forbid'
 
     @classmethod
-    def get_field_summary(cls):
+    def get_field_summary(cls: type) -> str:
+        """Returns class attributes PyDoc summarizing all Config fields."""
         summary = 'Attributes:\n'
         for _, field in cls.__fields__.items():
             if field.name != 'type_hint':
