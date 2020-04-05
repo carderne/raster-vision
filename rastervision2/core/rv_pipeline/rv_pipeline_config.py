@@ -39,9 +39,6 @@ class RVPipelineConfig(PipelineConfig):
     eval_uri: Optional[str] = Field(None, description='URI for output of eval')
     bundle_uri: Optional[str] = Field(None, description='URI for output of bundle')
 
-    from rastervision2.core.data import ClassConfig
-    class_config: Union[ClassConfig, str] = ClassConfig(names=['a'], colors=['a'])
-
     def update(self):
         super().update()
 
