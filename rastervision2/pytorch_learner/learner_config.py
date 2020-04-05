@@ -101,10 +101,8 @@ class DataConfig(Config):
         4, description='Number of workers to use when DataLoader makes batches.')
     # TODO support setting parameters of augmentors?
     augmentors: List[str] = Field(default_augmentors, description=(
-        "Names of albumentations augmentors to use. Defaults to ['RandomRotate90', "
-        "'HorizontalFlip', 'VerticalFlip']. Other options include: "
-        "['Blur', 'RandomRotate90', 'HorizontalFlip', 'VerticalFlip', 'GaussianBlur', "
-        "'GaussNoise', 'RGBShift', 'ToGray']."))
+        'Names of albumentations augmentors to use for training batches. '
+        'Choices include: ' + str(augmentors)))
 
     def update(self, learner: Optional['LearnerConfig'] = None):
         pass

@@ -143,7 +143,7 @@ usage patterns.
    setup
    cli
    architecture
-   config
+   api
 
 CHANGELOG
 ---------
